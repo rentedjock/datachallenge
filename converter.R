@@ -15,7 +15,7 @@ is.numeric(mydata$X1)
 
 #Verifying if null categories
 is.null(mydata$OtherChemo[210])
-
+9+
 #checking levels
 is.factor(mydata$ï..Province)
 
@@ -98,9 +98,9 @@ for ( i in 1:length(id)){
  
   
   #checking if any element in the event row is not missing
-if (any(!is.na(subset[3*i-1, 6:39]))){
+if (any(!is.na(subset[3*i-1, 6:45]))){
   #if yes, which are they?
-  event.rep <- which(!is.na ( subset[3*i-1, 6:39]) ) # this number also gives the time of event
+  event.rep <- which(!is.na ( subset[3*i-1, 6:45]) ) # this number also gives the time of event
   
   #for all the columns with non missing values
   for (j in seq_along(event.rep)  ){
@@ -124,9 +124,9 @@ if (any(!is.na(subset[3*i-1, 6:39]))){
   #counter already updated so that patients with events and censors are mutually exclusive
 
   
-  if (any(!is.na(subset[3*i, 6:39]))){
+  if (any(!is.na(subset[3*i, 6:45]))){
  
-   censor.rep <- which(!is.na ( subset[3*i, 6:39]) )
+   censor.rep <- which(!is.na ( subset[3*i, 6:45]) )
   
   for (j in seq_along(censor.rep)  ){
     
@@ -151,11 +151,23 @@ if (any(!is.na(subset[3*i-1, 6:39]))){
 }
 
 #ta-daa!
+
+
+
+#----Analysis ------------------------#
+
+
+
+new <-newdata%>%
+  mutate(time.tot = time.censor+time.event)
+
+
+
+
+new[new$time.tot==0, 2:5]
+
+new$OtherChemo[new$OtherChemo== "Null"] <- NA
+
+new$Province[new$Province=="UNKWN"] <- NA
+
 write.csv(newdata, "analysis_set.csv")
-
-
-
-
-
-
-
