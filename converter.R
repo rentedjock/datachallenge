@@ -107,13 +107,15 @@ if (any(!is.na(subset[3*i-1, 6:39]))){
     
     #find out the number of patients with that event
     p <- subset[3*i-1, 5+ event.rep[j]]
-    for (k in 1:p){
+   
+    if (p!=0){
+      for (k in 1:p){
       #add that time to event for the patients with those chaarcteristics
       newdata$time.event [counter] <-event.rep[j]
       #update counter
       counter<- counter +1
     }
-    
+  } 
     
   }
 } 
@@ -129,12 +131,13 @@ if (any(!is.na(subset[3*i-1, 6:39]))){
   for (j in seq_along(censor.rep)  ){
     
     p <- subset[3*i, 5+ censor.rep[j] ]
-    for (k in 1:p){
+    if (p!=0){
+      for (k in 1:p){
       newdata$time.censor [counter] <-censor.rep[j]
       
       counter<- counter +1
     }
-    
+  }  
     
     
   }
