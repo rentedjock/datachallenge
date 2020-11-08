@@ -198,7 +198,7 @@ mean(1/new$time.tot)
 
 new<- droplevels(new)
 
-fit.cox <- cph (Surv(time.tot, status)~Age+Sex , data= new)
+fit.cox <- cph (Surv(time.tot, status)~+Age+Sex+OtherChemo+ Province , data= new)
 
 fit.age <- npsurv (Surv(time.tot, status)~Age , data= new)
 fit.sex <- npsurv (Surv(time.tot, status)~Sex , data= new)
