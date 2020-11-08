@@ -44,6 +44,7 @@ max(mydata$X1, na.rm =T) #1441
 newdata <- data.frame()
 subset <- mydata[mydata$OtherChemo != "ALL" & mydata$Sex != "ALL" & mydata$Province!="ALL" & mydata$Age != "ALL",]
 
+
 #working with X1
 
 #because
@@ -59,6 +60,7 @@ r <- sum(subset$X1, na.rm = T)
 province <- vector("character")
 otherchemo <- vector("character" )
 sex <- vector("character")
+
 agegroup <- vector("character")
 
 
@@ -156,12 +158,12 @@ if (any(!is.na(subset[3*i-1, 6:45]))){
 
 #----Analysis ------------------------#
 
-
-
+#new$time.censor <- new$time.censor-1
+#new$time.event <- new$time.event -1
 new <-newdata%>%
-  mutate(time.tot = time.censor+time.event)
+  mutate(time.tot = time.censor+time.event, status= ifelse(time.event  !=0, 1,0 ))
 
-
+new$time.tot <- new$time.tot-1
 
 
 new[new$time.tot==0, 2:5]
@@ -171,3 +173,34 @@ new$OtherChemo[new$OtherChemo== "Null"] <- NA
 new$Province[new$Province=="UNKWN"] <- NA
 
 write.csv(newdata, "analysis_set.csv")
+
+
+
+
+new$time.tot[which(new$time.tot==-1)]<- 39
+
+
+#answer 1: 704
+
+length(which(new$time.tot >9))
+library(rms)
+
+fit <- npsurv(Surv(time.tot, status)~1, data = new)
+plot(fit)
+
+summary(fit)
+
+#new[new$time.tot==40, 2:5]
+mean(1/new$time.tot)
+#answer 3: 0.2372147
+
+#answer 2:
+
+new<- droplevels(new)
+
+fit.cox <- cph (Surv(time.tot, status)~Age+Sex , data= new)
+
+fit.age <- npsurv (Surv(time.tot, status)~Age , data= new)
+fit.sex <- npsurv (Surv(time.tot, status)~Sex , data= new)
+fit.oth <-npsurv (Surv(time.tot, status)~otherchemo , data= new)
+fit.cox
